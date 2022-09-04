@@ -76,5 +76,15 @@ function createSave(hour){
 
 
 
-
+function displayTimeblockRows(currentTime) {
+  const currentHour = currentTime.hour();
+  for (let i = 9; i <= 17; i ++) {
+    const timeblock = createRow(i);
+    const hourCol = createCol(createHour(i), 1);
+    const textArea = createCol(createText(i, currentHour), 10);
+    const saveBtn = createCol(createSave(i), 1);
+    appendTimeblockColumns(timeblock, hourCol, textArea, saveBtn);
+    document.querySelector('.container').appendChild(timeblock);
+  }
+}
 

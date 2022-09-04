@@ -23,5 +23,58 @@ function fetchCurrentBlocks (){
   return currentBlocks ? JSON.parse(currentBlocks) : [];
 }
 
+// functions that create the timeblocks as well as the textarea and saveBtn elements
+
+function createRow (hourId){
+  var timeblock = document.createElement('div');
+  timeblock.classlist.add('row');
+  timeblock.id = `timeblock-${hourId}`;
+  return timeblock;
+}
+
+function createCol (element, colSize){
+  const col = document.createElement('div'); 
+  col.classlist.add(`col-${colSize}`, 'p-0');
+  col.appendChild(element);
+  return col;
+}
+
+function createHour (hour) {
+  const hourCol = document.createElement('div');
+  hourCol.classList.add('hour');
+  hourCol.textContent = formatHour(hour);
+  return hourCol;
+}
+
+function formatHour(hour) {
+  const hourString = String(hour);
+  return moment(hourString, 'h').format('hA');
+}
+
+function createText (hour, currentHour){
+  const textArea = document.createElement('textarea');
+  textArea.classList.add(getTextAreaBackgroundClass(hour, currentHour));
+  return textArea;
+}
+
+function getTextAreaBackgroundClass(hour, currentHour);{
+  return hour < currentHour ? 'past'
+  : hour === currentHour ? 'present'
+  : 'future';
+}
+
+function createSave(hour){
+  const saveBtn = document.createElement ('button');
+  saveBtn.classList.add('saveBtn');
+  saveBtn.innerHTML = '<i class="fas fa-save"></i>';
+  saveBtn.setAttribute('data-hour', hour);
+  return saveBtn;
+}
+
+
+
+
+
+
 
 

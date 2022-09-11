@@ -23,18 +23,32 @@ function fetchCurrentBlocks (){
   return currentBlocks ? JSON.parse(currentBlocks) : [];
 }
 
+
+function displayRows(currentTime) {
+  const currentHour = currentTime.hour();
+  for (let i = 9; i <= 17; i ++) {
+    const timeblock = createRow(i);
+    const hourCol = createCol(createHour(i), 1);
+    const textArea = createCol(createText(i, currentHour), 10);
+    const saveBtn = createCol(createSave(i), 1);
+    appendTimeblockColumns(timeblock, hourCol, textArea, saveBtn);
+    document.querySelector('.container').appendChild(timeblock);
+  }
+}
+
+
 // functions that create the timeblocks as well as the textarea and saveBtn elements
 
 function createRow (hourId){
-  var timeblock = document.createElement('div');
-  timeblock.classlist.add('row');
+  const timeblock = document.createElement('div');
+  timeblock.classList.add('row');
   timeblock.id = `timeblock-${hourId}`;
   return timeblock;
 }
 
 function createCol (element, colSize){
   const col = document.createElement('div'); 
-  col.classlist.add(`col-${colSize}`, 'p-0');
+  col.classList.add(`col-${colSize}`, 'p-0');
   col.appendChild(element);
   return col;
 }
@@ -57,7 +71,7 @@ function createText (hour, currentHour){
   return textArea;
 }
 
-function getTextAreaBackgroundClass(hour, currentHour);{
+function getTextAreaBackgroundClass(hour, currentHour){
   return hour < currentHour ? 'past'
   : hour === currentHour ? 'present'
   : 'future';
@@ -71,20 +85,37 @@ function createSave(hour){
   return saveBtn;
 }
 
-
-
-
-
-
-function displayTimeblockRows(currentTime) {
-  const currentHour = currentTime.hour();
-  for (let i = 9; i <= 17; i ++) {
-    const timeblock = createRow(i);
-    const hourCol = createCol(createHour(i), 1);
-    const textArea = createCol(createText(i, currentHour), 10);
-    const saveBtn = createCol(createSave(i), 1);
-    appendTimeblockColumns(timeblock, hourCol, textArea, saveBtn);
-    document.querySelector('.container').appendChild(timeblock);
+function appendTimeblockColumns(timeblockRow, hourCol, textAreaCol, saveBtnCol) {
+  const innerCols = [hourCol, textAreaCol, saveBtnCol];
+  for (let col of innerCols) {
+    timeblockRow.appendChild(col);
   }
 }
+
+// Functions that enable the saving text inputs to local storage
+
+function containerClicked(event, timeblockList) {
+  if (isSaveButton(event)) {
+    const timeblockHour = timeblockHour(event);
+    const textAreaValue = textAreaValue(timeblockHour);
+    placeTimeblockInList(new TimeblockObj(timeblockHour, textAreaValue), timeblockList);
+    saveTimeblockList(timeblockList);
+  }
+}
+
+function isSaveButton(event) {
+  return event.target.matches('button') || event.target.matches('.fa-save');
+}
+
+function timeblockHour(event) {
+  return event.target.matches('.fa-save') ? event.target.parentElement.dataset.hour : event.target.dataset.hour;
+}
+
+function textAreaValue(timeblockHour) {
+  return document.querySelector(`#timeblock-${timeblockHour} textarea`).value;
+}
+
+
+
+
 

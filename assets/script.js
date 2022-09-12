@@ -1,6 +1,14 @@
+// Creates constructor for adding now objects
+class TimeblockObj{
+  constructor(hour, todo){
+    this.hour = hour;
+    this.todo =todo;
+  }
+}
+
 // Function runs on page load to display time and fecth objects from local storage
 window.onload = function() {
-  var currentBlocks = fetchCurrentBlocks;
+  var currentBlocks = fetchCurrentBlocks();
   var currentTime = moment();
 
   displayDate(currentTime);
@@ -8,7 +16,7 @@ window.onload = function() {
 
   document.querySelector('.container')
     .addEventListener('click', function(event){
-      containerClick(event, currentBlocks);
+      containerClicked(event, currentBlocks);
     });
     setText(currentBlocks);
 }
@@ -19,7 +27,7 @@ function displayDate(currentTime){
 }
 // returns saved objects from local storage
 function fetchCurrentBlocks (){
-  var currentBlocks = localstorage.getItem('timeblocksObj');
+  var currentBlocks = localStorage.getItem('timeblocksObj');
   return currentBlocks ? JSON.parse(currentBlocks) : [];
 }
 
@@ -115,7 +123,33 @@ function textAreaValue(timeblockHour) {
   return document.querySelector(`#timeblock-${timeblockHour} textarea`).value;
 }
 
+function placeTimeblockInList(newTimeblockObj, timeblockList) {
+  if (timeblockList.length > 0) {
+    for (let savedTimeblock of timeblockList) {
+      if (savedTimeblock.hour === newTimeblockObj.hour) {
+        savedTimeblock.todo = newTimeblockObj.todo;
+        return;
+      }
+    }
+  } 
+  timeblockList.push(newTimeblockObj);
+  return;
+}
 
+function saveTimeblockList(timeblockList) {
+  localStorage.setItem('timeblockObjects', JSON.stringify(timeblockList));
+}
+
+function setText(timeblockList) {
+  if (timeblockList.length === 0 ) {
+    return;
+  } else {
+    for (let timeblock of timeblockList) {
+      document.querySelector(`#timeblock-${timeblock.hour} textarea`)
+        .value = timeblock.todo;
+    }
+  }
+}
 
 
 
